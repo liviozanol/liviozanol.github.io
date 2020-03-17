@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <title>Teste TSP</title>
+        <style>
+            /* Set the size of the div element that contains the map */
+           #map {
+             height: 400px;  /* The height is 400 pixels */
+             width: 100%;  /* The width is the width of the web page */
+            }
+         </style>
+         <script>
+            function loadMapsAPI(){
+                if (document.getElementById('APIKey') && document.getElementById('APIKey').value) {
+                    loadJS("https://maps.googleapis.com/maps/api/js?key="+document.getElementById('APIKey').value+"&callback=updateMap");
+                } else {
+                    alert("fill form correctly");
+                }
+            }
+         </script>
+    </head>
+    <body>
+        <h2>Caminho mínimo</h2><br/>
+        Teste de cálculo de caminho mínimo com restrição de tempo<br/>
+        <div id="map"></div>
+        <br/>
+        <br/>
+        <form>
+            <strong><label for="locationsJson">Locations Json:</label><br/></strong>
+            <textarea id="locationsJson" rows="15" cols="53">
+[{"lat":"-20.336125","lng":"-40.291.214","timeLimit":"0"},{"lat":"-20.378212","lng":"-40.318356","timeLimit":"5"},{"lat":"-20.343198","lng":"-40.284668","timeLimit":"10"},{"lat":"-20.347332","lng":"-40.296781","timeLimit":"15"},{"lat":"-20.333843","lng":"-40.33445","timeLimit":"10"},{"lat":"-20.315498","lng":"-40.289719","timeLimit":"2"},{"lat":"-20.3141","lng":"-40.297526","timeLimit":"30"}]</textarea><br/>
+            <br/>
+            <strong><label for="APIKey">Google API Key:</label><br/></strong>
+            <input type="text" id="APIKey" size="51"><br/>
+            <br/>
+            <br/>
+            <input type="button" value="Ok" onclick="loadMapsAPI()"><br/>
+            <br/>
+            <br/>
+            Json Format:[{"lat":"LAT1","lng":"LONG1","timeLimit":"TIME_LIMIT_IN_MINUTES1"},{"lat":"LAT2","lng":"LONG2","timeLimit":"TIME_LIMIT_IN_MINUTES2"}...]<br/>
+            <div id="Result">
+            </div>
+        </form>
+        <script>
+
+            function updateMap() {
+                if (document.getElementById('APIKey') && document.getElementById('APIKey').value && document.getElementById('locationsJson').innerHTML) {
+                    //Ok
+                    var tempVar;
+                    var marker;
+                    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    var labelIndex = 0;
+
+                    //DecodedJson
+                    var decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').innerHTML);
+                    var map = new google.maps.Map(
+                        document.getElementById('map'), {zoom: 12, center: {"lat":parseFloat(decodedJsonLocations[0].lat),"lng":parseFloat(decodedJsonLocations[0].lng)}}
+                    );
+                    
+                    decodedJsonLocations.forEach(element => {
+                        tempVar = {"lat": parseFloat(element.lat), "lng": parseFloat(element.lng)};
+                        marker = new google.maps.Marker({position: tempVar, map: map, label:labels[labelIndex++ % labels.length]});
+                    });
+                } else {
+                    alert("please fill the input forms");
+                }
+
+            }
+            
+
+            var loadJS = function(url){
+                //url is URL of external file, implementationCode is the code
+                //to be called from the file, location is the location to 
+                //insert the <script> element
+                var scriptTag = document.createElement('script');
+                scriptTag.src = url;
+
+                document.body.appendChild(scriptTag);
+            };
+        </script>
+    </body>
+</html>
