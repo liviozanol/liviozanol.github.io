@@ -27,7 +27,7 @@
         <form>
             <strong><label for="locationsJson">Locations Json:</label><br/></strong>
             <textarea id="locationsJson" rows="15" cols="53">
-[{"lat":"-20.378212","lng":"-40.318356","timeLimit":"5"},{"lat":"-20.343198","lng":"-40.284668","timeLimit":"10"},{"lat":"-20.347332","lng":"-40.296781","timeLimit":"15"},{"lat":"-20.333843","lng":"-40.33445","timeLimit":"10"},{"lat":"-20.315498","lng":"-40.289719","timeLimit":"2"},{"lat":"-20.3141","lng":"-40.297526","timeLimit":"30"}]</textarea><br/>
+[{"lat":"-20.378212","lng":"-40.318356","timeLimit":"150"},{"lat":"-20.343198","lng":"-40.284668","timeLimit":"5"},{"lat":"-20.347332","lng":"-40.296781","timeLimit":"125"},{"lat":"-20.333843","lng":"-40.33445","timeLimit":"130"},{"lat":"-20.315498","lng":"-40.289719","timeLimit":"150"},{"lat":"-20.3141","lng":"-40.297526","timeLimit":"145"}]</textarea><br/>
             <br/>
             <strong><label for="depotlatlng">Depot lat/lng:</label><br/></strong>
             <input type="text" id="depotlatlng" size="51" value='{"lat":"-20.336125","lng":"-40.291.214"}'><br/>
@@ -41,8 +41,12 @@
             Json Format:[{"lat":"LAT1","lng":"LONG1","timeLimit":"TIME_LIMIT_IN_MINUTES1"},{"lat":"LAT2","lng":"LONG2","timeLimit":"TIME_LIMIT_IN_MINUTES2"}...]<br/>
             <div id="Result">
             </div>
+            
         </form>
         <script>
+            var map;
+            var depotLatLng;
+            var waypointsLatLng = new Array();
 
             function updateMap() {
                 if (document.getElementById('APIKey') && 
@@ -56,10 +60,10 @@
                     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //used for set marker labels
                     var labelIndex = 0; //used for set marker labels
 
-                    var tempLatLngObj; //Used for distance matrix api
                     var originsArray = new Array(); //used for distance matrix api
                     var destinationsArray = new Array(); //used for distance matrix api
-                    
+
+
                     //DecodedDepotJSON
                     var decodedJsonDepot = JSON.parse(document.getElementById('depotlatlng').value);
                     //DecodedJson
@@ -67,14 +71,14 @@
 
 
 
-                    var map = new google.maps.Map(
+                    map = new google.maps.Map(
                         document.getElementById('map'), {zoom: 12, center: {"lat":parseFloat(decodedJsonDepot.lat),"lng":parseFloat(decodedJsonDepot.lng)}}
                     );
                     tempVar = {"lat": parseFloat(decodedJsonDepot.lat), "lng": parseFloat(decodedJsonDepot.lng)};
 
-                    tempLatLngObj = new google.maps.LatLng(parseFloat(decodedJsonDepot.lat), parseFloat(decodedJsonDepot.lng));
-                    originsArray.push(tempLatLngObj);
-                    destinationsArray.push(tempLatLngObj);
+                    depotLatLng = new google.maps.LatLng(parseFloat(decodedJsonDepot.lat), parseFloat(decodedJsonDepot.lng));
+                    originsArray.push(depotLatLng);
+                    destinationsArray.push(depotLatLng);
 
                     var depotMarker = new google.maps.Marker({
                         position: tempVar, 
@@ -89,11 +93,6 @@
 
                     decodedJsonLocations.forEach(element => {
                         tempVar = {"lat": parseFloat(element.lat), "lng": parseFloat(element.lng)};
-                        marker = new google.maps.Marker({
-                            position: tempVar, 
-                            map: map, 
-                            label:labels[labelIndex++ % labels.length]
-                        });
                         tempLatLngObj = new google.maps.LatLng(parseFloat(element.lat), parseFloat(element.lng));
                         originsArray.push(tempLatLngObj);
                         destinationsArray.push(tempLatLngObj);
@@ -122,9 +121,12 @@
                 //console.log (status);
 
                 var data = {}
+                data['num_vehicles'] = 1
                 data['time_matrix'] = new Array(); //Matriz que armarena tempo de deslocamento entre todos os pontos passados.
                 data['time_windows'] = new Array(); //Matriz que armazena o limite de tempo em que o "caxeiro" deve estar em cada nó.
                 var tempArray = new Array();
+                var arrayOfNumbers = new Array();
+                var count = 1;
 
                 response.rows.forEach(child => {
                     child.elements.forEach(elementChild => {
@@ -134,8 +136,16 @@
                     //console.log(tempArray);
                     data['time_matrix'].push(tempArray.concat());
                     tempArray.length = 0;
+
+                    //Usado para gerar permuta de array (análise combinatória)
+                    arrayOfNumbers.push(count);
+                    count++;
                 });
 
+                //Removendo o último elemento, pois tem um a mais devido ao "DEPOT", que deve ser desconsiderado para fins da permuta, já que é um ponto de partida fixo.
+                arrayOfNumbers.pop();
+
+            
                 //Time Windows
                 data['time_windows'].push(0);
                 var decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').innerHTML);
@@ -143,22 +153,137 @@
                     data['time_windows'].push(parseInt(element.timeLimit) * 60); //Convert to seconds
                 });
 
-                data['num_vehicles'] = 1
-                data['depot'] = 0
+                
 
                 //Matrizes geradas.
                 //Matrizes geradas.
                 //Matrizes geradas.
-                //Fazer um a um mesmo (custo altíssimo!, mas é só pra teste)
-
+                //Fazer um a um mesmo (custo altíssimo!, mas é só pra teste). Permuta
+                var permuteArray = Array.from(permute(arrayOfNumbers));
+                console.log("PERMUTED ARRAY");
+                console.log(permuteArray);
 
                 console.log ('DATA:');
                 console.log (data);
                 dump(data['time_matrix'], 'body');
 
+                var i=0;
+                var j=0;
+                var arrayOfResults = [];
+                var arrayOfValidResults = [];
+                var invalidResult = false;
+                for (i=0;i<permuteArray.length;i++) { //Passa por todos elementos da permuta.
+                    arrayOfResults[i]=0;
+                    invalidResult = false;
+                    for (j=0;j<permuteArray[i].length;j++) { //Dentro de uma permuta (dentre várias existentes)!
+                        if (j == 0) { //Caso a posição atual seja 0, quer dizer que estamos pegando a distância entre o depot e o primeiro número dentro do array.
+                            arrayOfResults[i]=data['time_matrix'][0][permuteArray[i][j]];
+                        } else {
+                            arrayOfResults[i]=arrayOfResults[i] + data['time_matrix'][permuteArray[i][j-1]][permuteArray[i][j]];
+                            //data['time_matrix'][j-1][?] = Linha.
+                            //data['time_matrix'][?][j] = coluna.
+                            //Ex.:
+                                //i = 1;
+                                //j = 1;
+                                //permuteArray[1] = [2,3,1,4,6,5,7]; (i)
+                                //permuteArray[1][1] = 3; (j)
+                                //permuteArray[1][1-1] = 2; (j - 1)
+                                //data['time_matrix'][2][3] = XPTO  //Custo do ponto 2 ao ponto 3 que consta na planilha de distance_matrix.
+                        }
+                        //console.log("i:"+i+"j:"+j);
+                        //console.log("arrayOfResults[i]:"+arrayOfResults[i]);
+                        //console.log("permuteArray[i][j-1]:"+permuteArray[i][j-1]+"permuteArray[i][j]:"+permuteArray[i][j]);
+                        //console.log("data['time_matrix'][0][permuteArray[i][j]:"+data['time_matrix'][0][permuteArray[i][j]]);
+                        //console.log(data['time_matrix'][0]);
+                        //console.log("data['time_windows'][permuteArray[i][j]]:"+data['time_windows'][permuteArray[i][j]]);
+                       
+                        //Checar Se caminho até agora excede o timematrix... Se sim, não considerar este array para fins de cálculo de caminho mínimo no TSP VRPTW
+                        if (arrayOfResults[i] > data['time_windows'][permuteArray[i][j]]) {
+                            //Fora do threshold... Não calcular mais este array.
+                            arrayOfResults.pop();
+                            invalidResult = true;
+                            break;
+                        }                     
+                    }
+                    if (invalidResult == false) { //Resultado válido!! Adicionar ao array
+                        //console.log("RESULTADO VALIDO!");
+                        arrayOfValidResults[i] = arrayOfResults[i];
+                        //console.log(arrayOfValidResults);
+                    }
+                }
+
+                var minValue = 999999999999;
+                var minIndex = 999999999999;
+                console.log("WAYPOINTS");
+                console.log(waypointsLatLng);
+                if (arrayOfValidResults.length == 0) {
+                    console.log("NO VALID RESULT FOUND!!!!! USE BEST PATH DIRECTLY BY GOOGLE MAPS API");
+                    renderDirection(depotLatLng,waypointsLatLng,true);
+                } else {
+                    for (i=0;i<arrayOfValidResults.length;i++) {
+                        if ((arrayOfValidResults[i] < minValue) && (arrayOfValidResults[i] != 'undefined')) {
+                            minValue = arrayOfValidResults[i];
+                            minIndex = i;
+                        }
+                    };
+
+                    /*decodedJsonLocations.forEach(element => {
+                        tempVar = {"lat": parseFloat(element.lat), "lng": parseFloat(element.lng)};
+                        marker = new google.maps.Marker({
+                            position: tempVar, 
+                            map: map, 
+                            label:labels[labelIndex++ % labels.length]
+                        });
+                        tempLatLngObj = new google.maps.LatLng(parseFloat(element.lat), parseFloat(element.lng));
+                        waypointsLatLng.push({location:tempLatLngObj});
+                    });
+                    */
+
+                    renderDirection(depotLatLng,waypointsLatLng,true);
+                }
+                
+                console.log("####INDICE DO MENOR CAMINHO####:" + minIndex);
+                console.log("####MENOR CAMINHO####:" + arrayOfValidResults[minIndex]);
+
+                //console.log("DEPOIS. Iniciando sort de array");
+                //arrayOfResults.sort();
+                //console.log ('NOT SORTED:');
+                //console.log (arrayOfResults);
+                //dump(arrayOfValidResults, 'body');
+                
+                //console.log(Array.from(permute("1234567".split(''))));
+                //return;
+
                 //document.getElementById('Result').innerHTML = response;
             }
             
+            function renderDirection(depotLatLng,waypointsLatLng,optmizeWayPoints = false) {
+                var directionsService = new google.maps.DirectionsService();
+                var directionsRenderer = new google.maps.DirectionsRenderer();
+
+                directionsRenderer.setMap(map);
+                calculateAndDisplayRoute(directionsService,directionsRenderer,depotLatLng,waypointsLatLng,optmizeWayPoints);
+
+            
+            }
+
+            function calculateAndDisplayRoute(directionsService, directionsRenderer,depotLatLng,waypointsLatLng,optmizeWayPoints = false) {
+                var start = depotLatLng
+                var end = waypointsLatLng.pop().location;
+                directionsService.route({
+                origin: start,
+                destination: end,
+                waypoints: waypointsLatLng,
+                optimizeWaypoints: optmizeWayPoints,
+                travelMode: 'DRIVING'
+                }, function(response, status) {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+                });
+            }
 
             var loadJS = function(url){
                 //url is URL of external file, implementationCode is the code
@@ -172,7 +297,14 @@
 
 
 
-
+            function *permute(a, n = a.length) {
+                if (n <= 1) yield a.slice();
+                else for (let i = 0; i < n; i++) {
+                    yield *permute(a, n - 1);
+                    const j = n % 2 ? 0 : i;
+                    [a[n-1], a[j]] = [a[j], a[n-1]];
+                }
+            }
 
 
 
