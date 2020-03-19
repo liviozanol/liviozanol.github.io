@@ -74,8 +74,11 @@
          </script>
     </head>
     <body>
-        <h2>Caminho mínimo</h2><br/>
-        Teste de cálculo de caminho mínimo com restrição de tempo<br/>
+        <h2>Caminho mínimo (VRPTW)</h2><br/>
+        Teste de cálculo de caminho mínimo com restrição de tempo utilizando força bruta. <br/>
+        Todos os caminhos possíveis são gerados utilizando permuta e calculados utilizando a matrix de distância gerada utilizando distancematrix API do google.<br/>
+        O nome deste tipo de problema é Vehicle Routing Problem With Time Windows (VRPWTW). Uma variação do VRP que deriva do problema do Caixeiro Viajante (TSP).<br/>
+        Ao final referências usadas e links para soluções mais bem construídas.
         <div id="map" style="display: none;"></div>
         <br/>
         <br/>
@@ -96,6 +99,61 @@
             <strong><label for="Result">Processamento</label><br/></strong>
             <div id="Result" style="border:1px solid black;">
             </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <hr>
+            <br/>
+            <br/>
+            <h3>Referências e links</h3><br/>
+            <h4>APIs usadas:</h4>
+            <a href="https://developers.google.com/maps/documentation/distance-matrix/">Google Distance Matrix</a><br/>
+            <a href="https://developers.google.com/maps/documentation/directions/">Google Directions</a><br/>
+            <a href="https://developers.google.com/maps/documentation/javascript">Google Maps Javascript</a><br/>
+            <br/>
+            <br/>
+            <h4>Sobre o VRPWTW e problemas similares:</h4>
+            <a href="https://en.wikipedia.org/wiki/Vehicle_routing_problem">Wikipedia VRP</a><br/>
+            <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">Wikipedia TSP (Caixeiro Viajante)</a><br/>
+            <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Wikipedia Dijkstra</a><br/>
+            <a href="https://www.displayr.com/what-is-a-distance-matrix/">O que é Distance Matrix</a><br/>
+            <a href="https://www.sciencedirect.com/science/article/pii/S1018364710000297">Artigo mostrando formas de solução de VRPs</a><br/>
+            <br/>
+            <br/>
+            <h4>Sobre análise combinatória e permuta (reaprendendo!):</h4>
+            <a href="https://www.stoodi.com.br/blog/2018/02/08/analise-combinatoria-tudo-sobre-probabilidade-permutacao-e-combinacao/">Básico</a><br/>
+            <a href="https://en.wikipedia.org/wiki/Heap%27s_algorithm">Algorítmo Heap para solução de análise combinatória</a><br/>
+            <a href="https://medium.com/@rwillt/two-very-different-algorithms-for-generating-permutations-412e8cc0039c">Algorítimos para gerar permuta</a><br/>
+            <br/>
+            <br/>
+            <h4>Outros algorítmos de solução de vrp e tsp:</h4>
+            <a href="https://developers.google.com/optimization/routing/vrptw/"><strong>MUITO BOM.</strong> biblioteca do google para solução de VRPs</a><br/>
+            <a href="https://dev.to/iedmrc/vehicle-routing-problems-and-how-to-solve-them-8h3">Artigo sobre VRPs e soluções</a><br/>
+            <a href="https://github.com/VROOM-Project/vroom">código para Vroom</a><br/>
+            TSP:<br/>
+            <a href="https://github.com/NizarBsb/tsp-js/blob/master/src/js/brute-force.js">bruteforce</a><br/>
+            <a href="https://github.com/oldj/ga-tsp-js">Com demo online</a><br/>
+            <a href="https://github.com/kifj/tsp-js">Outro</a><br/>
+            <br/>           
+            <br/>
+            <h4><strong>VRPs onlines:</strong></h4>
+            <a href="http://logvrp.com/logvrpwa/Default.aspx?isDemo=true">Logvrp (solução paga)</a><br/>
+            <a href="http://map.vroom-project.org/">Vroom - open source</a><br/>
+            <a href="https://www.optaplanner.org/learn/useCases/vehicleRoutingProblem.html">Optaplanner</a><br/>
+            <br/>
+            <br/>
+            <h4>Outras APIs existentes que podem ser usadas no lugar do google:</h4>
+            <a href="https://developer.mapquest.com/documentation/directions-api/#matrix">Mapquest</a><br/>
+            <a href="https://developers.arcgis.com/features/directions/#documentation">Arcgis</a><br/>
+            <a href="https://developer.here.com/products/routing">Here</a><br/>
+            <a href="https://distancematrix.ai/?utm_source=GIS&utm_medium=Answer&utm_campaign=Dev_1">Distancematrix.ai</a><br/>
+            <a href="https://docs.traveltimeplatform.com/reference/time-filter">Traveltimeplatform</a><br/>
+            <a href="https://github.com/topics/distance-matrix-api?o=asc&s=stars">Coleção Github</a><br/>
+            Se não me engano, também há como usar uma boa parte do openstreetmaps.
+
+
+
             
         </form>
         <script>
@@ -105,6 +163,7 @@
                     document.getElementById('APIKey').value && 
                     document.getElementById('depotlatlng') && 
                     document.getElementById('depotlatlng').value && 
+                    document.getElementById('locationsJson').value &&
                     document.getElementById('locationsJson').innerHTML) {
                     //Ok
                     var tempVar; //Used for lat/lng of points
@@ -117,7 +176,9 @@
                     //DecodedDepotJSON
                     var decodedJsonDepot = JSON.parse(document.getElementById('depotlatlng').value);
                     //DecodedJson
-                    decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').innerHTML);
+                    decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').value);
+                    console.log("DECODED JSON");
+                    console.log(decodedJsonLocations);
 
 
                     if (!mapCreated) {
@@ -204,7 +265,7 @@
             
                 //Time Windows
                 data['time_windows'].push(0);
-                var decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').innerHTML);
+                var decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').value);
                 decodedJsonLocations.forEach(element => {
                     data['time_windows'].push(parseInt(element.timeLimit) * 60); //Convert to seconds
                 });
@@ -256,12 +317,12 @@
                                 //permuteArray[1][1-1] = 2; (j - 1)
                                 //data['time_matrix'][2][3] = XPTO  //Custo do ponto 2 ao ponto 3 que consta na planilha de distance_matrix.
                         }
-                        console.log("i:"+i+"j:"+j);
-                        console.log("arrayOfResults[i]:"+arrayOfResults[i]);
-                        console.log("permuteArray[i][j-1]:"+permuteArray[i][j-1]+"permuteArray[i][j]:"+permuteArray[i][j]);
-                        console.log("data['time_matrix'][0][permuteArray[i][j]:"+data['time_matrix'][0][permuteArray[i][j]]);
-                        console.log(data['time_matrix'][0]);
-                        console.log("data['time_windows'][permuteArray[i][j]]:"+data['time_windows'][permuteArray[i][j]]);
+                        //console.log("i:"+i+"j:"+j);
+                        //console.log("arrayOfResults[i]:"+arrayOfResults[i]);
+                        //console.log("permuteArray[i][j-1]:"+permuteArray[i][j-1]+"permuteArray[i][j]:"+permuteArray[i][j]);
+                        //console.log("data['time_matrix'][0][permuteArray[i][j]:"+data['time_matrix'][0][permuteArray[i][j]]);
+                        //console.log(data['time_matrix'][0]);
+                        //console.log("data['time_windows'][permuteArray[i][j]]:"+data['time_windows'][permuteArray[i][j]]);
                        
                         //Checar Se caminho até agora excede o timematrix... Se sim, não considerar este array para fins de cálculo de caminho mínimo no TSP VRPTW
                         if (arrayOfResults[i] > data['time_windows'][permuteArray[i][j]]) {
@@ -298,7 +359,7 @@
                 var timedRoute = false;
                 document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Caminhos válidos calculados. "+validResults+" caminhos válidos...<br/>";
                 if (arrayOfValidResults.length == 0) {
-                    document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Nenhum caminho válido encontrado... Utilizando algorítmo de otimização do próprio google maps<br/>";
+                    document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "####### WARNING: ####### Nenhum caminho válido encontrado com a restrição de tempo indicada... Utilizando algorítmo de otimização do próprio google maps<br/>";
                     console.log("NO VALID RESULT FOUND!!!!! USE BEST PATH DIRECTLY BY GOOGLE MAPS API");
                     decodedJsonLocations.forEach(element => {
                         tempVar = {"lat": parseFloat(element.lat), "lng": parseFloat(element.lng)};
