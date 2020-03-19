@@ -9,19 +9,74 @@
             }
          </style>
          <script>
+            var mapCreated = false;
+            var directionsService;
+            var directionsRenderer;
+            var map;
+            var depotLatLng;
+            var waypointsLatLng = new Array();
+            var decodedJsonLocations;
+            var depotMarker;
+            var data = {};
+            var originsArray = new Array(); //used for distance matrix api
+            var destinationsArray = new Array(); //used for distance matrix api
+
+            function loadJSCallBack() {
+                directionsService = new google.maps.DirectionsService();
+                directionsRenderer = new google.maps.DirectionsRenderer();
+                updateMap();
+            }
+
             function loadMapsAPI(){
-                if (document.getElementById('APIKey') && document.getElementById('APIKey').value) {
-                    loadJS("https://maps.googleapis.com/maps/api/js?key="+document.getElementById('APIKey').value+"&callback=updateMap");
+                document.getElementById('Result').innerHTML = "";
+                if (!mapCreated) {
+                    if (document.getElementById('APIKey') && document.getElementById('APIKey').value) {
+                        loadJS("https://maps.googleapis.com/maps/api/js?key="+document.getElementById('APIKey').value+"&callback=loadJSCallBack");
+                    } else {
+                        alert("fill form correctly");
+                    }
+                    document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Mapa google carregado...<br/>";
                 } else {
-                    alert("fill form correctly");
+                    depotLatLng = "";
+                    waypointsLatLng.length = 0;
+                    decodedJsonLocations = "";
+                    depotMarker = "";
+                    data = {};
+                    originsArray.length = 0;
+                    destinationsArray.length = 0;
+                    directionsRenderer.set('directions', null);
+                    directionsRenderer.setMap(null);
+                    updateMap();
                 }
             }
+
+
+            //SIGMA GRAPH
+            /*var s = new sigma(
+                {
+                    renderer: {
+                    container: document.getElementById('sigma-container'),
+                    type: 'canvas'
+                    },
+                    settings: {
+                        edgeLabelSize: 'proportional',
+                    minArrowSize: 10
+                    }
+                }
+            );
+            var graph = {
+                nodes: [],
+                edges: []
+            };
+            */
+
+
          </script>
     </head>
     <body>
         <h2>Caminho mínimo</h2><br/>
         Teste de cálculo de caminho mínimo com restrição de tempo<br/>
-        <div id="map"></div>
+        <div id="map" style="display: none;"></div>
         <br/>
         <br/>
         <form>
@@ -32,21 +87,18 @@
             <strong><label for="depotlatlng">Depot lat/lng:</label><br/></strong>
             <input type="text" id="depotlatlng" size="51" value='{"lat":"-20.336125","lng":"-40.291.214"}'><br/>
             <strong><label for="APIKey">Google API Key:</label><br/></strong>
-            <input type="text" id="APIKey" size="51" ><br/>
+            <input type="text" id="APIKey" size="51" value="AIzaSyC5G913tOlx1jee1z892Qb8ZCuEY4dx1Uo"><br/>
             <br/>
             <br/>
             <input type="button" value="Ok" onclick="loadMapsAPI()"><br/>
             <br/>
             <br/>
-            Json Format:[{"lat":"LAT1","lng":"LONG1","timeLimit":"TIME_LIMIT_IN_MINUTES1"},{"lat":"LAT2","lng":"LONG2","timeLimit":"TIME_LIMIT_IN_MINUTES2"}...]<br/>
-            <div id="Result">
+            <strong><label for="Result">Processamento</label><br/></strong>
+            <div id="Result" style="border:1px solid black;">
             </div>
             
         </form>
         <script>
-            var map;
-            var depotLatLng;
-            var waypointsLatLng = new Array();
 
             function updateMap() {
                 if (document.getElementById('APIKey') && 
@@ -60,27 +112,30 @@
                     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //used for set marker labels
                     var labelIndex = 0; //used for set marker labels
 
-                    var originsArray = new Array(); //used for distance matrix api
-                    var destinationsArray = new Array(); //used for distance matrix api
 
 
                     //DecodedDepotJSON
                     var decodedJsonDepot = JSON.parse(document.getElementById('depotlatlng').value);
                     //DecodedJson
-                    var decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').innerHTML);
+                    decodedJsonLocations = JSON.parse(document.getElementById('locationsJson').innerHTML);
 
 
-
-                    map = new google.maps.Map(
-                        document.getElementById('map'), {zoom: 12, center: {"lat":parseFloat(decodedJsonDepot.lat),"lng":parseFloat(decodedJsonDepot.lng)}}
-                    );
+                    if (!mapCreated) {
+                        mapCreated = true;
+                        map = new google.maps.Map(
+                            document.getElementById('map'), {zoom: 12, center: {"lat":parseFloat(decodedJsonDepot.lat),"lng":parseFloat(decodedJsonDepot.lng)}}
+                        );
+                    }
                     tempVar = {"lat": parseFloat(decodedJsonDepot.lat), "lng": parseFloat(decodedJsonDepot.lng)};
 
                     depotLatLng = new google.maps.LatLng(parseFloat(decodedJsonDepot.lat), parseFloat(decodedJsonDepot.lng));
                     originsArray.push(depotLatLng);
                     destinationsArray.push(depotLatLng);
-
-                    var depotMarker = new google.maps.Marker({
+                    
+                    if (depotMarker) {
+                        depotMarker.setMap(null);
+                    }
+                    depotMarker = new google.maps.Marker({
                         position: tempVar, 
                         map: map, 
                         label: "Z",
@@ -97,6 +152,8 @@
                         originsArray.push(tempLatLngObj);
                         destinationsArray.push(tempLatLngObj);
                     });
+
+                    document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Calculando 'Distance' (Time) Matrix...<br/>";
 
                     var distanceMatrixAPI = new google.maps.DistanceMatrixService();
                     distanceMatrixAPI.getDistanceMatrix(
@@ -120,7 +177,6 @@
                 //console.log ('status:');
                 //console.log (status);
 
-                var data = {}
                 data['num_vehicles'] = 1
                 data['time_matrix'] = new Array(); //Matriz que armarena tempo de deslocamento entre todos os pontos passados.
                 data['time_windows'] = new Array(); //Matriz que armazena o limite de tempo em que o "caxeiro" deve estar em cada nó.
@@ -159,19 +215,29 @@
                 //Matrizes geradas.
                 //Matrizes geradas.
                 //Fazer um a um mesmo (custo altíssimo!, mas é só pra teste). Permuta
+
+                document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Distance Matrix Calculado...<br/>";
                 var permuteArray = Array.from(permute(arrayOfNumbers));
                 console.log("PERMUTED ARRAY");
                 console.log(permuteArray);
+                document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Permuta (Análise Combinatória) de todas as posições dos pontos de destino concluída. "+permuteArray.length+" Hipóteses....<br/>";
 
                 console.log ('DATA:');
                 console.log (data);
-                dump(data['time_matrix'], 'body');
+                //dump(data['time_matrix'], 'body');
 
                 var i=0;
                 var j=0;
                 var arrayOfResults = [];
                 var arrayOfValidResults = [];
                 var invalidResult = false;
+                var tempVar; //Used for lat/lng of points
+                var marker; //used for create marker
+                var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //used for set marker labels
+                var labelIndex = 0; //used for set marker labels
+                var validResults = 0;
+                var tempValidResultPrint = "";
+                document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Gerando Array de Melhores Caminhos Válidos considerando restrição de tempo de entrega...<br/>";
                 for (i=0;i<permuteArray.length;i++) { //Passa por todos elementos da permuta.
                     arrayOfResults[i]=0;
                     invalidResult = false;
@@ -190,12 +256,12 @@
                                 //permuteArray[1][1-1] = 2; (j - 1)
                                 //data['time_matrix'][2][3] = XPTO  //Custo do ponto 2 ao ponto 3 que consta na planilha de distance_matrix.
                         }
-                        //console.log("i:"+i+"j:"+j);
-                        //console.log("arrayOfResults[i]:"+arrayOfResults[i]);
-                        //console.log("permuteArray[i][j-1]:"+permuteArray[i][j-1]+"permuteArray[i][j]:"+permuteArray[i][j]);
-                        //console.log("data['time_matrix'][0][permuteArray[i][j]:"+data['time_matrix'][0][permuteArray[i][j]]);
-                        //console.log(data['time_matrix'][0]);
-                        //console.log("data['time_windows'][permuteArray[i][j]]:"+data['time_windows'][permuteArray[i][j]]);
+                        console.log("i:"+i+"j:"+j);
+                        console.log("arrayOfResults[i]:"+arrayOfResults[i]);
+                        console.log("permuteArray[i][j-1]:"+permuteArray[i][j-1]+"permuteArray[i][j]:"+permuteArray[i][j]);
+                        console.log("data['time_matrix'][0][permuteArray[i][j]:"+data['time_matrix'][0][permuteArray[i][j]]);
+                        console.log(data['time_matrix'][0]);
+                        console.log("data['time_windows'][permuteArray[i][j]]:"+data['time_windows'][permuteArray[i][j]]);
                        
                         //Checar Se caminho até agora excede o timematrix... Se sim, não considerar este array para fins de cálculo de caminho mínimo no TSP VRPTW
                         if (arrayOfResults[i] > data['time_windows'][permuteArray[i][j]]) {
@@ -206,26 +272,79 @@
                         }                     
                     }
                     if (invalidResult == false) { //Resultado válido!! Adicionar ao array
+                        validResults++;
                         //console.log("RESULTADO VALIDO!");
                         arrayOfValidResults[i] = arrayOfResults[i];
+                        permuteArray[i].forEach(element => {
+                            if (! tempValidResultPrint) {
+                                tempValidResultPrint = "[" +element;
+                            } else {
+                                tempValidResultPrint = tempValidResultPrint + " , " + element;
+                            }
+                        });
+                        tempValidResultPrint = tempValidResultPrint + "]";
+                        document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Achou resultado válido "+validResults+" "+tempValidResultPrint+". Tempo: "+Math.round(arrayOfValidResults[i]/60 * 10)/10+" minutos...<br/>";
+                        tempValidResultPrint = "";
                         //console.log(arrayOfValidResults);
                     }
                 }
+                tempValidResultPrint = "";
+               
 
                 var minValue = 999999999999;
                 var minIndex = 999999999999;
-                console.log("WAYPOINTS");
-                console.log(waypointsLatLng);
+                //console.log("WAYPOINTS");
+                //console.log(waypointsLatLng);
+                var timedRoute = false;
+                document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Caminhos válidos calculados. "+validResults+" caminhos válidos...<br/>";
                 if (arrayOfValidResults.length == 0) {
+                    document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Nenhum caminho válido encontrado... Utilizando algorítmo de otimização do próprio google maps<br/>";
                     console.log("NO VALID RESULT FOUND!!!!! USE BEST PATH DIRECTLY BY GOOGLE MAPS API");
-                    renderDirection(depotLatLng,waypointsLatLng,true);
+                    decodedJsonLocations.forEach(element => {
+                        tempVar = {"lat": parseFloat(element.lat), "lng": parseFloat(element.lng)};
+                        tempLatLngObj = new google.maps.LatLng(parseFloat(element.lat), parseFloat(element.lng));
+                        waypointsLatLng.push({location:tempLatLngObj});
+                    });
                 } else {
+                    timedRoute = true;
                     for (i=0;i<arrayOfValidResults.length;i++) {
                         if ((arrayOfValidResults[i] < minValue) && (arrayOfValidResults[i] != 'undefined')) {
                             minValue = arrayOfValidResults[i];
                             minIndex = i;
                         }
-                    };
+                    }
+                    /*console.log("permuteArray min");
+                    console.log(permuteArray[minIndex]);
+                    console.log("permuteArray min 2");
+                    console.log(permuteArray[minIndex][2]);
+                    console.log("decodedJson");
+                    console.log(decodedJsonLocations);
+                    console.log("decodedJson 6");
+                    console.log(decodedJsonLocations[permuteArray[minIndex][6]]);
+                    */
+                    permuteArray[minIndex].forEach(element => {
+                        if (! tempValidResultPrint) {
+                            tempValidResultPrint = "[" +element;
+                        } else {
+                            tempValidResultPrint = tempValidResultPrint + " , " + element;
+                        }
+                    });
+
+                    document.getElementById('Result').innerHTML = document.getElementById('Result').innerHTML + "Grafando melhor rota "+tempValidResultPrint+" Tempo total: "+Math.round(minValue/60 * 10)/10+" minutos...<br/>";
+                    for (i=0;i<permuteArray[minIndex].length;i++) {
+                        tempVar = {"lat": parseFloat(decodedJsonLocations[permuteArray[minIndex][i]-1].lat), "lng": parseFloat(decodedJsonLocations[permuteArray[minIndex][i]-1].lng)};
+                        //marker = new google.maps.Marker({
+                        //    position: tempVar, 
+                        //    map: map, 
+                         //   label:labels[labelIndex++ % labels.length]
+                        //});
+                        tempLatLngObj = new google.maps.LatLng(parseFloat(decodedJsonLocations[permuteArray[minIndex][i]-1].lat), parseFloat(decodedJsonLocations[permuteArray[minIndex][i]-1].lng));
+                        waypointsLatLng.push({location:tempLatLngObj});                        
+                    }
+                    console.log("DECODED JSON");
+                    console.log(decodedJsonLocations);
+                    //return;
+                    
 
                     /*decodedJsonLocations.forEach(element => {
                         tempVar = {"lat": parseFloat(element.lat), "lng": parseFloat(element.lng)};
@@ -239,8 +358,11 @@
                     });
                     */
 
-                    renderDirection(depotLatLng,waypointsLatLng,true);
+                    
                 }
+                
+                renderDirection(depotLatLng,waypointsLatLng,timedRoute);
+                document.getElementById("map").style.display = "block";
                 
                 console.log("####INDICE DO MENOR CAMINHO####:" + minIndex);
                 console.log("####MENOR CAMINHO####:" + arrayOfValidResults[minIndex]);
@@ -258,10 +380,8 @@
             }
             
             function renderDirection(depotLatLng,waypointsLatLng,optmizeWayPoints = false) {
-                var directionsService = new google.maps.DirectionsService();
-                var directionsRenderer = new google.maps.DirectionsRenderer();
-
                 directionsRenderer.setMap(map);
+                
                 calculateAndDisplayRoute(directionsService,directionsRenderer,depotLatLng,waypointsLatLng,optmizeWayPoints);
 
             
