@@ -6,3 +6,4 @@ node_modules
 .module-cache
 .docusaurus
 .vscode
+package-lock.json
