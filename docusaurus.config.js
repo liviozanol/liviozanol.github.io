@@ -17,8 +17,8 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'liviozanol', // Usually your GitHub org/user name.
-  projectName: 'personalsite.github.io', // Usually your repo name.
-  deploymentBranch: 'master',
+  projectName: 'liviozanol.github.io', // Usually your repo name.
+  deploymentBranch: 'gh-pages',
   trailingSlash: false,
 
   presets: [
