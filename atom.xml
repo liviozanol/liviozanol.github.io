@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://liviozanol.github.io./</id>
+    <title>Livio's Dump Blog</title>
+    <updated>2021-11-26T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://liviozanol.github.io./"/>
+    <subtitle>Livio's Dump Blog</subtitle>
+    <icon>https://liviozanol.github.io./img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[First Post]]></title>
+        <id>first</id>
+        <link href="https://liviozanol.github.io./first"/>
+        <updated>2021-11-26T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[First page just to keep a record!]]></summary>
+        <content type="html"><![CDATA[<p>First page just to keep a record!</p>]]></content>
+        <author>
+            <name>Lívio Zanol Puppim</name>
+            <uri>https://github.com/liviozanol</uri>
+        </author>
+    </entry>
+</feed>
