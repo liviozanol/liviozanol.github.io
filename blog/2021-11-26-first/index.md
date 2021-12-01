@@ -5,4 +5,4 @@ authors: [livio]
 tags: [first, hello world, docusaurus]
 ---
 
-First page just to keep a record!
+Just a first page to keep a record (a.k.a "Hello World")!
