@@ -31,8 +31,9 @@ const config = {
           routeBasePath: '/', // Set this value to '/'.
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/liviozanol/personalsite',
+          editUrl: 'https://github.com/liviozanol/personalsite',
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

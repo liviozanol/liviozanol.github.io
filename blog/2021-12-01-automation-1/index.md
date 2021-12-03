@@ -1,166 +1,80 @@
 ---
-slug: full-stack-netword-automation
-title: Full-Stack Network Automation
+slug: full-stack-automation
+title: Full-Stack Automation
 authors: [livio]
 tags: [automation, awx, ansible, gitlab, network automation]
 ---
 
-###TODO DEFINIÇÃO DE SERVIÇO
-###TODO VER SE MUDA O NOME "ELEMENT" PARA OUTRA COISA
-###TODO COLOCAR LINK PARA NOME DOS ELEMENTOS (ansible, gitlab, awx, etc.)
-###TODO Colocar os detalheamentos grandes em sessões a parte (tipo o code, mas não exatamente o code.). Explicar antes dos posts essas sessões.
-###Talvez separar a descrição de cada elemento para "parts" distintas do post
-###Fazer TL;DR e juntar toda a implantaçaõ num script só com docker-compose e sell script, citando como staartar
-###Fazer um resumão simples
-###Colocar as gravuras com as comunicações.
+## Introduction {#introduction}
+
+So, this is the first post on a series of automation posts that will be shown here on how to build a Full-Stack automation. In fact it can be used to automate any service, but we'll focus and use network as an example.
+
+This first post will cover the idea of the solution, its archtecture, components and other usefull informations. I'll try my best to not use marketing or specific definitions like SD-WAN, SDN, SaaS, IaaS, etc.
 
 
-So, this is the first post on a series of network automation posts that will shown here on how to build a full-stack automation. In fact it can be used to automate any service, but we'll focus and use network as an example.
-
-This post will cover the idea of the solution, its archtecture, the details of each element, some alternatives and other usefull informations. I'll try my best to not use marketing or specific definitions like SD-WAN, SDN, SaaS, IaaS, etc.
+First of all, let's be clear about what is considered "full-stack automation" on regarding this series of posts. Full-stack automation is referred as a solution/architecure to fully automate network (or any other services), beggining on the automation itself (eg.: playbooks that will run commands on a Automated Resource) all the way up to a structured data source using gitlab, an API and a WEB interface to be used by final users of the solution.
 
 
-
-First of all, let's be clear about what is considered "full-stack automation" on regarding this series of posts. Full-stack automation is referred as a solution/architecure to fully automate network (and any other services also). Beggining on the automation itself (eg.: playbooks that will run commands com a network equipment) all the way up to a structured data source using gitlab (##TODO: IVAN), an API and a WEB interface to be used by final users of the solution.
-
-After building all this architecture, users should be able to access a page, input some informations/value in it (eg.: routes, acls, interfaces IP addres, etc.) and watch it being deployed on a "automated element" (eg.: router)
+After building all this architecture, users should be able to access a page, input some information/value in it (eg.: routes, acls, interfaces IP addres, etc.) and watch it being deployed by ansible on a Automated Resource (eg.: router)
 
 (###TODO GIF SHOWING THE AUTOMATION)
 
-The architecture presented on this series of post is intended to be agnostic of manufacturer and cover any service, in a structured, secure and scalable way. Each piece of it was thought in way that can be exchanged by other solution with little/no ajustment on other pieces (eg.: change gitlab for a simplefile, or change the API programming language to any other that you want).
+## The Archtecture {#the-archtecture}
+
+The architecture presented on this series of post, which is shown below, is intended to be agnostic of manufacturer and cover any service automation, in a structured, secure and scalable way. Each piece of it was thought in way that can be exchanged by other solution with little/no ajustment on other pieces. You could change gitlab for files, change vault for ansible secret, change the API programming language to any other that you want, change the web user interface for other you want.
+
+![Archtecture of Full-Stack Automation](./img/architecture_dark.svg)
+
+- The web interface will provide a friendly interface to users where they can list, create, update or delete data from a browser.
+
+- The API will provide a single point of contact for all automation and is responsible to receive user requests on data modifications (eg.: change network interface description), validate the data and send it to gitlab.
+
+- Gitlab is used as a place to store structured data from users (like a database), and also asible playbooks.
+
+- Gitlab-CI will listen for data modifications on gitlab and call AWX to execute playbooks.
+
+- AWX/ansible will execute playbooks to implement the data modified by users in Automated Resources.
+
+- Hashicorp Vault will store key/pass to access Automated Resources and also key/pass to gitlab.
+
+- Automated Resource is a piece of infrasctructure that provides some IT service. It can be a router/switch, a firewall, a hypervisor (eg.: vmware vsphere, openstack), a virtual machine, a container, etc. We'll use a router as an example.
 
 
-Why/When use this kind of automation?
+## Why/When use Full-Stack Automation? {#why-use-archtecture}
 
 When you have services/functions that need to be used by final users to manage a provided infrastructure by you. Examples:
 
-You are a cloud provider and your users needs a portal/API/console/terraform module to manage the infrasctruscture you provide (like AWS, Azure, Google Cloud, Digital Ocean, etc.);
+- You are a cloud provider and your users needs a portal/API/console/terraform module to manage the infrasctruscture you provide (just like current cloud providers: AWS, Azure, Google Cloud, Digital Ocean, etc.);
 
-You are a service provider and you want(or need) that your users be able to change some configurations remotely for the provided infrastructured using a portal/API. (eg.: create ACLs on a remote router you provide)
+- You are a service provider and you want(or need) that your users be able to change some configurations remotely for the provided infrastructured using a portal/API. (eg.: create ACLs on a remote router you provide)
 
-You have an operation team and you want to provide a portal/API to operators to provise or change infrastructure. (eg.: installand manage CPEs on a MPLS network)
+- You have an operation team and you want to provide a portal/API to operators to provise or change infrastructure. (eg.: install and manage CPEs on a WAN network)
 
-You just want to test the archtecture or learn more about automation.
-
-
-The archtecture will provide a single point of contact for all automation via an API built on whatever language/framework you want (will be used python as an example). The API is responsible for receiving user requests, validate data received on business logic and data format specified, and push it throught the stack (to gitlab) to implement the changes on the infrasctructure.
-
-Any validation will be done on this layer and provide a feedback to the user with nice messages. Doing it this way allows the solution to receive only the data that needs to be set/changed by the user in strong verified way, providing a good secure point while keeping the infrasctructure itself on a completely separated segment acessed only by ansible/AWX withou any point of contact by users
-
-The web interface will provide a friendly interface to users providing a good user expirience for final users. The web interface can be run anywhere, all hard work is done by the API.
+- You just want to test the archtecture or learn more about automation.
 
 
-
-Why/When *NOT* use this kind of automation?
-
-
-When you don't need/want to provide infrasctructure services in a self-service manner to the enduser. When you have a small team that can manage the infrasctructure directly.
-
-Either way, the archtecture designed can also be used for any cases. You can, for example, just provide access to gitlab files and let your techinical team to modify direct infromation and levarage on the CI/CD + AWX solutions to implement it on your infrascture.
+## Why/When *NOT* use Full-Stack Automation? {#why-not-use-archtecture}
 
 
------------------
+When you don't need/want to provide infrasctructure services in a self-service manner to the enduser or When you have a small team that can manage the infrasctructure directly.
 
-Datailing each piece of archtecture
-
-
-
-Automated Element
+Either way, the archtecture designed can also be used for any cases on any point. You can, for example, just provide access to gitlab files and let your techinical team to modify direct infromation and levarage on the CI/CD + AWX solutions to implement it on your infrascture. You can also provide direct access to AWX so operators just complete a form (normal AWX use).
 
 
-Its a equipment or a service that will be automated by the solution. Can be a router/switch, a firewall, a hypervisor (eg.: vmware vsphere, openstack), a virtual machine, a mail server or virtually almost anything that needs to be automated. Since we are using ansible, almost anything can be automated. You can even manage a terraform deployment to extend it even further (https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html)!
+## Automation Scenario Used {#automation-scenario}
 
-A router/switch will be used as an example, but you can extend the architecture and its concepts to other things.
+We will use a scenario as an example to implement the Full-Stack Automation archtecture described here.
 
-The element is only accessed by ansible using credentials stored in a specific Hashicorp Vault. You can also use other infrastructure to access the element through ansible, like a SSH tunnel.
+Assertions:
 
-The element doesn't access ansible.
+You work on a network service provider that serves WAN connections to several clients.
 
+The network topology have CPEs (routers installed on clients premises) for every remote site that is connected to provider  network and that router connects each client site LAN to your transport network. You are required to allow clients to modify some configurations on these CPEs.
 
+- Clients should be able to change configuration for all CPEs installed on their remote sites.
 
-Ansible/AWX
+- Clients must only modify configuration for the LAN interface of CPEs.
 
+- Clients should be able to modify configuration for interface description, interface IP address/subnet, interface ACLs and helper address (DHCP server address).
 
-Ansible/AWX is the "engine" that will access automation alements and execute actions to implement the changes submited by user and validated by API and CI/CD.
-
-- It talks to any automated element to execute change actions.
-- It talks to harshicorp vault 2 to get keys/pass to access the automated elements
-- It talks to harshicorp vault 1 to get keys/pass to access gitlab
-- It talks to gitlab to get inventories, playbooks and complementary files (templates, etc.).
-- It receives API requests from Gitlab CI to start and monitor jobs/playbooks.
-
-
-###FIGURA SOMENTE COM ANSIBLE E SEUS CONTATOS
-
-Ansible is an automation platform that supports a wide range of functions and can be used to automate almost anything: From network devices from different manufacturers to custom web APIs. The choose for ansible in this layer is for this reason and also because of AWX.
-
-You can use other automation tool you like, but since the solution is using AWX as an API to excute and monitor jobs, its important that you execute it using ansible playbooks. Since ansible can execute any arbitrary shell command, you CAN use terraform, nornir, napalm, expect, custom scripts, whatever, but it needs to be called from ansible. You can, for example, install custom linux packages on ansible job execution container and just call a shell script in a playbook.
-
-Yes, ansible can be slow in some situations, and templates or jinja2 like language sometimes are a pain in the ass, but for this architecture, objetiving a manufacturer agnostic and wide range automation, its important. If you need high speeds or don't like ansible at all, you can use your preferred automation tool through ansible as explained, or just build a new API for you custom automation tool.
-
-
-AWX is a complete automation solution based on ansible. It boosts ansible adding a lot of functionalities to make a complete automation tool mainly introducing a nice web system. Some cool functionalities includes:
-- A web interface where you can make all life-cycle related activites with
-playbooks (monitor, execute, cancel, group, etc.). You still create the playbooks external.
-- Workflow of playbooks where you can execute one or more playbooks in sequence giving certain circunstances and even insert aproval tasks.
-- Nice web forms with basic data validation to start playbooks execution.
-- Notification of jobs states using e-mail, telegram, rocketchat, etc.
-- Integration with git or other sources to read inventories and playbooks.
-- LDAP and other integrations to autentication/authorizization.
-- And more important: A full REST API that gives will access to all of the above and more!
-
-Even if AWX have an aproval task on workflows, the solution described here won't use it. Since AWX have access to sensitive data, like key or pass to access infrasctructure elements, we need to minimize any human intervention on it and also its point of contact with other infrastructure. Only gitlab CI/CD will talk actively to AWX on full-stack automation archtecture. AWX  solution will be used solely as a way to start and monitor tasks execution
-
-###YOU CAN READ MORE ABOUT AWX AND ANSIBLE HERE:
-
-Harshicorp Vault
-
-The full-stack automation solution will have 2 vaults.
-
-Vault 1 stores secret keys/pass to be used by the APIs, gitlab CI and AWX. 
-- APIs need access to read/write on repositories of gitlab. These repositories will store our structured data that the user manipulates.
-- Gitlab CI needs an access token to talk to AWX API to start and monitor jobs and playbooks execution.
-- AWX needs access to read repositories on gitlab so it can get the inventories, playbooks and complentary files.
-
-Vault 2 only stores secret keys/pass that will be used by AWX which are secrets that have access to modify infrasctructure elements. A much more sensitive information.
-
-Considering the sensitive data, vault 2 MUST only be accessed by AWX, and should preferebly be installed in specific network/security segment with ACLs/firewall rules permiting only AWX comunication.
-
-Also, can be used rules inside AWX that permits reading key/pass only by AWX (IP based) and this will be done in the solution. In this way, even if the access token from AWX is leaked and even if for some reason an attacker can communicate with vault, it won't be able to get the sensitive key/pass.
-
-On the solution "demo", for simplicity, the 2 vaults will be on the same host, but should be separated.
-
-
-
-Harshicorp Vault is a solution to secure store and get sensitive information. It has a lot of features, like One Time Password, many auth methods, policies, temp tokens, etc. For this solution will be used basic auth with token (no refreshment), simple Key/Value store and policies to restrict IPs getting information. Of course it can and should be improved.
-
-###More about Harshicorp Vault can be found on its site:
-
-
-Gitlab
-
-
-Gitlab will be used by the solution for 3 main objectives:
-- Store structured data that will be read and manipulated, also keeping hystorical data.
-- Store inventories, playbooks and complementary files (templates, etc.) used by AWX.
-- Store the APIs code.
-
-Ideally, for security purpose, you should separate it in 3 or 2 gitlabs, with gitlab-ci not running on the gitlab with ansible files, but for simplicity, will be kept only one.
-
-On full-stack automation, gitlab never talks to any external element and only receive to the following elements:
-- APIs that needs to read/write structured data on repositories.
-- AWX that needs to read playbooks/invotires
-- Gitlab CI that starts the execution of a pipeline that will call AWX to implment changes.
-
-You may also need to manually send data to it (eg.: modify API source codes or ansible playbooks). You should only be able to contact it temporary for this, and after it you should block the access.
-
-Gitlab is a git source code controller with a nice websystem very similar to github that don't needs introduction. It has versioning, issues control, tags, auto devops, and a lot of features that you can explore.
-
-###More about Gitlab can be found on its site:
-
-
-Gitlab CI
-
-API
-
-Web Interface
+- Clients should be able to access a web page to make modifications. They should be able to also do these actions throught an API.
