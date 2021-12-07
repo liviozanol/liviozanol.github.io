@@ -1,6 +1,6 @@
 ---
 slug: full-stack-it-automation-part-1
-title: Full-Stack Automation Part 1
+title: Full-Stack Automation Part 1 - Overview
 authors: [livio]
 tags: [automation, awx, ansible, gitlab, network automation]
 ---
@@ -86,8 +86,8 @@ The network topology has CPEs (routers installed on clients premises) for every 
 
 ## System Requirements {#system-requirements}
 
-The simulated architecture will run on a single machine. In a production environment you may need to adjust it by separating elements in different secure segments and adding one or more pieces of softwares as needed. Since it's on a single machine you'll need some good amount of **FREE** RAM memory (around 8GB), and a decent CPU. Since this is a demo, you have the option to use gitlab.com (or other gitlab) instead of intalling one and save about 2-3GB of RAM, just ajust the steps/scripts.
+The simulated architecture will run on a single machine. In a production environment you may need to adjust it by separating elements in different secure segments and adding one or more pieces of softwares as needed. Since it's on a single machine you'll need some good amount of **FREE** RAM memory (around 8GB), and a decent CPU. Since this is a demo, you have the option to use gitlab.com (or other gitlab) instead of intalling one and save about 3-4GB of RAM, just adjust the steps/scripts.
 
 It'll be used docker-compose and some custom scripts to build the solution. You could install it using pure docker or kubernetes, adjusting scripts and files, of course.
 
-You can run docker-compose on a VM using a virtual box, another hypervisor (also in a "cloud", of course) or use WSL on windows (which is also a VM).
+You can run the scripts on a VM using a virtual box, another hypervisor (vmware, 'aws', openstack, etc) or use WSL on windows (which is also a VM by the way).
