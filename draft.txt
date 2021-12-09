@@ -14,103 +14,8 @@ tags: [automation, awx, ansible, gitlab, network automation]
 ###Colocar as gravuras com as comunicações.
 ###FAZER UM RESUMÃO BEM LEGAL DE TODAS AS PARTES
 ###FALAR DA PARTE QUE DÁ PARA SUBSTITUIR CADA PARTE INDEPENDENTE DA OUTRA E DAR EXMEPLOS (PYTHON EVE, ETC).
+##TODO ###https://cloud-images.ubuntu.com/focal/current/
 
-
-So, this is the first post on a series of automation posts that will be shown here on how to build a full-stack automation. In fact it can be used to automate any service, but we'll focus and use network as an example.
-
-This first post will cover the idea of the solution, its archtecture, components and other usefull informations. I'll try my best to not use marketing or specific definitions like SD-WAN, SDN, SaaS, IaaS, etc.
-
-
-
-First of all, let's be clear about what is considered "full-stack automation" on regarding this series of posts. Full-stack automation is referred as a solution/architecure to fully automate network (and any other services also), beggining on the automation itself (eg.: playbooks that will run commands com a Automated Equipment) all the way up to a structured data source using gitlab (##TODO: IVAN), an API and a WEB interface to be used by final users of the solution.
-
-After building all this architecture, users should be able to access a page, input some information/value in it (eg.: routes, acls, interfaces IP addres, etc.) and watch it being deployed on a Automated Resource (eg.: router)
-
-(###TODO GIF SHOWING THE AUTOMATION)
-
-The architecture presented on this series of post is intended to be agnostic of manufacturer and cover any service automation, in a structured, secure and scalable way. Each piece of it was thought in way that can be exchanged by other solution with little/no ajustment on other pieces. You could change gitlab for files, change vault for ansible secret, change the API programming language to any other that you want, change the web user interface for other you want.
-
-The web interface will provide a friendly interface to users where they can list, create, update or delete data from a browser.
-
-The API will provide a single point of contact for all automation and is responsible to receive user requests on data modifications (eg.: change network interface description), validate the data and send it to gitlab.
-
-Gitlab is used as a place to store structured data from users (like a database), and also asible playbooks.
-
-Gitlab-CI will listen form data modifications on gitlab and call AWX to execute playbooks.
-
-AWX/ansible will execute playbooks to implement the data modified by users in Automated Resources.
-
-Hashicorp Vault will store key/pass to access Automated Resources and also key/pass to gitlab.
-
-
-
-
-Why/When use this kind of automation?
-
-When you have services/functions that need to be used by final users to manage a provided infrastructure by you. Examples:
-
-You are a cloud provider and your users needs a portal/API/console/terraform module to manage the infrasctruscture you provide (like AWS, Azure, Google Cloud, Digital Ocean, etc.);
-
-You are a service provider and you want(or need) that your users be able to change some configurations remotely for the provided infrastructured using a portal/API. (eg.: create ACLs on a remote router you provide)
-
-You have an operation team and you want to provide a portal/API to operators to provise or change infrastructure. (eg.: installand manage CPEs on a MPLS network)
-
-You just want to test the archtecture or learn more about automation.
-
-
-Why/When *NOT* use this kind of automation?
-
-
-When you don't need/want to provide infrasctructure services in a self-service manner to the enduser. When you have a small team that can manage the infrasctructure directly.
-
-Either way, the archtecture designed can also be used for any cases. You can, for example, just provide access to gitlab files and let your techinical team to modify direct infromation and levarage on the CI/CD + AWX solutions to implement it on your infrascture. You can also provide direct access to AWX.
-
-
------------------
-
-Datailing each piece of archtecture
-
-
-
-Automated Resource
-
-
-Its a equipment or a service that will be automated by the solution. Can be a router/switch, a firewall, a hypervisor (eg.: vmware vsphere, openstack), a virtual machine, a mail server or virtually almost anything that needs to be automated. Since we are using ansible, almost anything can be automated. You can even manage a terraform deployment to extend it even further (https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html)!
-
-A router/switch will be used as an example, but you can extend the architecture and its concepts to other things.
-
-The resource is only accessed by ansible using credentials stored in a specific Hashicorp Vault. You can also use other infrastructure to access the resource through ansible, like a SSH tunnel.
-
-The resource doesn't access ansible.
-
-
-
-
-
-Harshicorp Vault
-
-The full-stack automation solution will have 2 vaults.
-
-Vault 1 stores secret keys/pass to be used by the APIs, gitlab CI and AWX. 
-- APIs need access to read/write on repositories of gitlab. These repositories will store our structured data that the user manipulates.
-- Gitlab CI needs an access token to talk to AWX API to start and monitor jobs and playbooks execution.
-- AWX needs access to read repositories on gitlab so it can get the inventories, playbooks and complentary files.
-
-Vault 2 only stores secret keys/pass that will be used by AWX which are secrets that have access to modify infrasctructure resources. A much more sensitive information.
-
-Considering the sensitive data, vault 2 MUST only be accessed by AWX, and should preferebly be installed in specific network/security segment with ACLs/firewall rules permiting only AWX comunication.
-
-Also, can be used rules inside AWX that permits reading key/pass only by AWX (IP based) and this will be done in the solution. In this way, even if the access token from AWX is leaked and even if for some reason an attacker can communicate with vault, it won't be able to get the sensitive key/pass.
-
-On the solution "demo", for simplicity, the 2 vaults will be on the same host, but should be separated.
-
-
-
-Harshicorp Vault is a solution to secure store and get sensitive information. It has a lot of features, like One Time Password, many auth methods, policies, temp tokens, etc. For this solution will be used basic auth with token (no refreshment), simple Key/Value store and policies to restrict IPs getting information. Of course it can and should be improved.
-
-###More about Harshicorp Vault can be found on its site:
-
-You can use other methods or solution if wanted like: gitlab secret variables; ansible/awx vault; azure/aws vault; whatever. Harshicorp vault is used because its a very good software have enhanced security and is cloud agnostic. Also it has only one separate function in the solution, so, if needed, it can be easely changeable (not like depending on awx or gitlab).
 
 
 
@@ -127,3 +32,94 @@ Any validation will be done on this layer and provide a feedback to the user wit
 
 
 Web Interface
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- CRIAR PROJETO COM SOURCE DO GIT
+/api/v2/organizations/2/projects/
+Create a Project for an Organization
+{
+  "allow_override": true,
+  "credential": 0,
+  "custom_virtualenv": "string",
+  "description": "string",
+  "local_path": "string",
+  "name": "string",
+  "organization": 0,
+  "scm_branch": "string",
+  "scm_clean": true,
+  "scm_delete_on_update": true,
+  "scm_refspec": "string",
+  "scm_type": "string",
+  "scm_update_cache_timeout": 0,
+  "scm_update_on_launch": true,
+  "scm_url": "string",
+  "timeout": 0
+}
+
+
+- CRIAR INVENTARIO COM SOURCE DO GIT
+/api/v2/inventories/
+name: Name of this inventory. (string, required)
+description: Optional description of this inventory. (string, default="")
+organization: Organization containing this inventory. (id, required)
+kind: Kind of inventory being represented. (choice)
+"": Hosts have a direct link to this inventory. (default)
+smart: Hosts for inventory generated using the host_filter property.
+host_filter: Filter that will be applied to the hosts of this inventory. (string, default="")
+variables: Inventory variables in JSON or YAML format. (json, default=``)
+insights_credential: Credentials to be used by hosts belonging to this inventory when accessing Red Hat Insights API. (id, default=``)
+{
+  "host_filter": "ansible_facts__ansible_distribution__exact=\"CentOS\"",
+  "kind": "smart",
+  "name": "smart inventory",
+  "organization": 1
+}
+
+
+
+
+
+/api/v2/users/{id}/roles/
+Associate Roles with this User
+Make a POST request to this resource to add or remove a role from this user. The following fields may be modified:
+
+id: The Role ID to add to the user. (int, required)
+disassociate: Provide if you want to remove the role. (any value, optional
+
+###TODO: INITIAL INSTALL
+sudo apt update && sudo apt install ca-certificates curl gnupg lsb-release jq openssl docker ansible make python3 --yes
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+
+sudo apt install docker-ce docker-ce-cli containerd.io --yes
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+
+curl -fsSL https://bootstrap.pypa.io/get-pip.py > get-pip.py
+
+python3 get-pip.py
+
+sudo usermod -aG docker

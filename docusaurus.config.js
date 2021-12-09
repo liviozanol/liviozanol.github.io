@@ -31,7 +31,7 @@ const config = {
           routeBasePath: '/', // Set this value to '/'.
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/liviozanol/personalsite',
+          editUrl: 'https://github.com/liviozanol/liviozanol.github.io',
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
         },
@@ -55,9 +55,13 @@ const config = {
         },
         items: [
           {
-            label: my_mail,
+            label: `E-mail: ${my_mail}`,
             href: `mailto:${my_mail}`,
             position: 'right',
+          },
+          { 
+            label: 'GitHub',
+            href: 'https://github.com/liviozanol'
           },
         ],
       },

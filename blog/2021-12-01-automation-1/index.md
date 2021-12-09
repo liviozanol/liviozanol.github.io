@@ -2,7 +2,7 @@
 slug: full-stack-it-automation-part-1
 title: Full-Stack Automation Part 1 - Overview
 authors: [livio]
-tags: [automation, awx, ansible, gitlab, network automation]
+tags: [automation, awx, ansible, gitlab, network automation, gitops, CI/CD, ops pipeline]
 ---
 
 ## Introduction {#introduction}
@@ -11,6 +11,7 @@ So, this is the first post on a series of automation posts that will be shown he
 
 This first post will cover the idea of the solution, its architecture, components and other useful information. I'll try my best to not use marketing or specific definitions like SD-WAN, SDN, SaaS, IaaS, etc.
 
+<!--truncate-->
 
 First of all, let's be clear about what is considered "full-stack automation" regarding this series of posts. Full-stack automation is referred as a solution/architecture to fully automate network (or any other services), beginning on the automation itself (eg.: playbooks that will run commands on a Automated Resource) all the way up to a structured data source using gitlab, an API and a WEB interface to be used by final users of the solution.
 
@@ -41,7 +42,7 @@ Description of each element/layer:
 
 - Hashicorp Vault will store key/pass to access Automated Resources and also key/pass to gitlab.
 
-- Automated Resource is a piece of infrastructure that provides some IT service. It can be a router/switch, a firewall, a hypervisor (eg.: vmware vsphere, openstack), a virtual machine, a container, etc. We'll use a router as an example.
+- Automated Resource is a piece of infrastructure that provides some IT service. It can be a router/switch, a firewall, a hypervisor (eg.: vmware vsphere, openstack), a virtual machine, a container, etc. A router will be used as an example. Since we are using ansible, almost anything can be automated. You can even manage a terraform deployment to extend it even further (https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html)! The resource is only accessed by ansible using credentials stored in a specific Hashicorp Vault. You can also use other infrastructure to access the Automated REsource through ansible, like a SSH tunnel.
 
 
 ## Why/When to use Full-Stack Automation? {#why-use-archtecture}

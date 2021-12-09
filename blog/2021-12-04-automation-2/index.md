@@ -11,6 +11,8 @@ Since gitlab is the center of our architecture we'll start by installing and con
 
 Gitlab is a git source code controller with a nice websystem very similar to github that doesn't need introductions. It has versioning, issues control, tags, auto devops, and a lot of features that you can explore.
 
+<!--truncate-->
+
 :::note
 If you do not want to install gitlab and prefer to use gitlab.com or an already existing gitlab (and save 3-4 GB of RAM), you don't need to run the scripts detailed here. Either way, I recommend that at least you read this post.
 :::
@@ -63,98 +65,5 @@ The installation has a docker-compose YAML and a shell script. The shell script 
 
 The docker-compose will install and run gitlab and also run a shell script that will create users access tokens to be used further on the solution.
 
-docker-compose.yml
-```yaml
-services:
-  #Service "gitlab" creates and run the gitlab instance.
-  gitlab:
-    image: 'gitlab/gitlab-ce:latest'
-    restart: always
-    container_name: 'gitlab_fullstack_automation'
-    hostname: 'gitlab'
-    environment:
-      #Set an initial root password and disable https. set external URL to localhost
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://127.0.0.1:10000'
-        gitlab_rails['initial_root_password'] = 'fullstackautomationrootpass'
-        nginx['listen_port'] = 80
-        nginx['listen_https'] = false
-    ports:
-      #Only listen on HTTP exposed port
-      - '10000:80'
-      #- '10443:443'
-      #- '10022:22'
-    volumes:
-      - '/srv/gitlab/config:/etc/gitlab'
-      - '/srv/gitlab/logs:/var/log/gitlab'
-      - '/srv/gitlab/data:/var/opt/gitlab'
-      #Temp volume just to run the script to create users
-      - './scripts:/tmp/scripts'
-  #Service "gitlab-setup" only runs the scripts after gitlab container is up and running.
-  gitlab-setup:
-    image: 'gitlab/gitlab-ce:latest'
-    depends_on:
-      - gitlab
-    restart: "no"
-    entrypoint: [ "bash", "-c", "/bin/bash /tmp/scripts/create_user_and_access_token.sh"]
-
-#References:
-#https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#programmatically-creating-a-personal-access-token
-#https://forum.gitlab.com/t/logging-in-from-the-api/48384/14
-
-```
-create_user_and_access_token.sh
-
-```shell
-#!/bin/bash
-
-SLEEP_TIME="120" #time to wait so gitlab is up. Could be a curl and a while waiting for login page, but I'm lazy right now.
-USERNAME="fullstackautomation" #username to create on gitlab
-PASSWORD="fullstackautomation" #password
-TOKEN="fullstack-automation" #personal auth token. must be 20 character long
-
-sleep $SLEEP_TIME
-
-#Creates a new user on gitlab
-gitlab-rails console <<< "
-user = User.create();
-user.name = '$USERNAME';
-user.username = '$USERNAME';
-user.password = '$PASSWORD';
-user.confirmed_at = '01/01/2000';
-user.admin = true;
-user.email = '$USERNAME@full-stack-automation.com';
-user.save!;
-puts 'User created';
-
-token = user.personal_access_tokens.create(scopes: [:api], name: 'Automation token');
-token.set_token('$TOKEN');
-token.save!;
-puts 'Token created';
-"
-
-
-AWX_USERNAME="awxfullstackautomation" #username to create on gitlab
-AWX_PASSWORD="awxfullstackautomation" #password
-AWX_TOKEN="fullstack-automa-awx" #personal auth token. must be 20 character long
-
-#Creates AWX user and pass
-gitlab-rails console <<< "
-user = User.create();
-user.name = '$AWX_USERNAME';
-user.username = '$AWX_USERNAME';
-user.password = '$AWX_PASSWORD';
-user.confirmed_at = '01/01/2000';
-user.admin = true;
-user.email = '$AWX_USERNAME@full-stack-automation.com';
-user.save!;
-puts 'User created';
-
-token = user.personal_access_tokens.create(scopes: [:read_repository], name: 'AWX Automation token');
-token.set_token('$AWX_TOKEN');
-token.save!;
-puts 'Token created';
-"
-
-
-```
+TODO ***LINK [docker-compose.yml](LINK)
+TODO ***LINK [create_user_and_access_token.sh](LINK)
