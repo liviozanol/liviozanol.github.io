@@ -33,7 +33,7 @@ Ansible/AWX is the "engine" that will access automation elements and execute act
 - It talks to gitlab to get inventories, playbooks and complementary files (templates, etc.).
 - It receives API requests from Gitlab CI to start and monitor jobs/playbooks.
 
-Even if AWX has an approval task on workflows, the solution described here won't use it. Since AWX has access to sensitive data, like key or pass to access infrastructure resources, we need to minimize any human intervention on it and also its point of contact with other infrastructure. Only gitlab CI/CD will talk actively to AWX on full-stack automation architecture. AWX  solution will be used solely as a way to start and monitor tasks execution.
+Even if AWX has an approval task on workflows, the solution described here won't use it. Since AWX has access to sensitive data, like key or pass to access infrastructure resources, we need to minimize any human intervention on it and also its point of contact with other infrastructure. Only gitlab CI/CD will talk actively to AWX on full-stack automation architecture. AWX solution will be used solely as a way to start and monitor tasks execution.
 
 ![AWX/ansible role on architecture](./img/awx_arch.svg)
 
@@ -46,7 +46,7 @@ Yes, ansible can be [slow in some situations](https://networklore.com/ansible-no
 
 ## Ansible/AWX Installation and Configuration {#ansible-install-config}
 
-First, if you haven't cloned the architecture repo from github, please do so: ```git clone https://github.com/liviozanol/full-stack-automation```
+First, if you haven't cloned the architecture repo from github, please do so: ```git clone https://github.com/liviozanol/full-stack_automation```
 
 TL;DR: Simply run the shell script
 ```

@@ -36,7 +36,7 @@ On full-stack automation, gitlab never talks to any external element and only re
 - AWX that needs to read playbooks/inventories
 - Gitlab CI that starts the execution of a pipeline that will call AWX to implement changes.
 
-You may also need to manually send data to it (eg.: modify API source codes or ansible playbooks using git push). Ideally, you should only be able to contact it temporarily for this, and after code update you should block external access (on network, acl, firewall, etc. Not by user/pass, please).
+You may also need to manually send data to it (eg.: modify API source codes or ansible playbooks using git push). Also it could be used to make an request/approval step for data sent by the users.
 
 
 ## Gitlab Alternatives {#gitlab-alternatives}
