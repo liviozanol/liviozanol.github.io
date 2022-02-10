@@ -5,13 +5,6 @@ authors: [livio]
 tags: [automation, awx, ansible, gitlab, network automation, gitops, CI/CD, ops pipeline]
 ---
 
-###TODO: PESQUISAR OUTROS TODO
-####COLOCA RUMA TAG NO REPO DE AUTOMACAO
-###TODO DELETAR COMMITS ANTIGO DO REPO DE AUTOMACAO 
-###TODO ALTERAR README DO REPO FULLSTACK COM LINK PARA ESTE POST
-
-
-
 ## Introduction {#introduction}
 
 So, this is the first post on a series of automation posts that will demonstrate how to build a Full-Stack automation. In fact it can be used to automate any service, but we'll focus and use network as an example.
