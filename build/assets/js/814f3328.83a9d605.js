@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"First Post","permalink":"/first"}]}')}}]);

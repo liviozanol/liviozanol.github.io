@@ -43,7 +43,7 @@ When you build APIs you almost always want to think your serevice on a [CRUD](ht
 - How do you Update a service instance;
 - How do you Delete a service instance.
 
-Remebering our [service definition](../2021-12-16), our service is a WAN site LAN customization that users can change LAN IP addresses, set helper address, ACLs and some other infos. Thinking in a CRUD way would be something like this:
+Remebering our [service definition](./full-stack-it-automation-part-6-demo-scenario), our service is a WAN site LAN customization that users can change LAN IP addresses, set helper address, ACLs and some other infos. Thinking in a CRUD way would be something like this:
 - Create/Enable a WAN site LAN interface (or install/activate/comission whole WAN site CPE, including its PE interface).
 - Read/List WAN sites LAN configuration.
 - Update/Change WAN sites LAN configuration.
