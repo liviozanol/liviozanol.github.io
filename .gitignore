@@ -1,9 +1,0 @@
-node_modules
-*.log*
-*~
-*.pyc
-*.key
-.module-cache
-.docusaurus
-.vscode
-package-lock.json

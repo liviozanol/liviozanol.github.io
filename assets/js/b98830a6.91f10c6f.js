@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[1695],{2797:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/python-eve","name":"python eve","count":1,"permalink":"/tags/python-eve"}')}}]);
