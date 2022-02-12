@@ -11,7 +11,7 @@ const my_mail = "livio@zanol.com.br";
 const config = {
   title: 'Livio\'s Dump',
   tagline: 'Just to dump some thoughts',
-  url: 'https://liviozanol.github.io.',
+  url: 'https://livio.zanol.com.br',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
