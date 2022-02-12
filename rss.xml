@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Livio's Dump Blog</title>
-        <link>https://liviozanol.github.io./</link>
+        <link>https://livio.zanol.com.br/</link>
         <description>Livio's Dump Blog</description>
         <lastBuildDate>Sat, 05 Feb 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[Full-Stack Automation Part 10 - Demo - UI]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-10-demo-ui</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-10-demo-ui</link>
             <guid>full-stack-it-automation-part-10-demo-ui</guid>
             <pubDate>Sat, 05 Feb 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Web Interface]]></description>
@@ -22,7 +22,7 @@ The installation/configuration script will try to guess which IP address is the 
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 9 - Demo - API]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-9-demo-api</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-9-demo-api</link>
             <guid>full-stack-it-automation-part-9-demo-api</guid>
             <pubDate>Fri, 28 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Service API]]></description>
@@ -66,7 +66,7 @@ We have created a new HTTP GET path on our API that will list the last x pipelin
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 8 - Demo - Runner]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-8-demo-gitlab-runner</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-8-demo-gitlab-runner</link>
             <guid>full-stack-it-automation-part-8-demo-gitlab-runner</guid>
             <pubDate>Tue, 18 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Gtilab-CI/Gitlab Runner]]></description>
@@ -114,7 +114,7 @@ run:
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 7 - Demo - AWX]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-7-demo-awx</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-7-demo-awx</link>
             <guid>full-stack-it-automation-part-7-demo-awx</guid>
             <pubDate>Mon, 10 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Creating Playbooks and complements]]></description>
@@ -299,7 +299,7 @@ AWX latest versions have changed a lot from some previous one. Now, playbooks ar
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 6 - Demo -Scenario]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-6-demo-scenario</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-6-demo-scenario</link>
             <guid>full-stack-it-automation-part-6-demo-scenario</guid>
             <pubDate>Thu, 16 Dec 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Demo Introduction]]></description>
@@ -341,7 +341,7 @@ On each project we will store a file named &quot;wan_site_cfg.json&quot; that wi
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 5 - Gitlab CI]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-5-gitlabci</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-5-gitlabci</link>
             <guid>full-stack-it-automation-part-5-gitlabci</guid>
             <pubDate>Thu, 09 Dec 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Gitlab-CI]]></description>
@@ -357,7 +357,7 @@ You need to have docker available. Docker service must be running and healthy (c
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 4 - AWX]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-4-awx</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-4-awx</link>
             <guid>full-stack-it-automation-part-4-awx</guid>
             <pubDate>Wed, 08 Dec 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Ansible/AWX]]></description>
@@ -386,7 +386,7 @@ curl -sk --request POST https://admin:awx-fullstackautomationpass@localhost:8043
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 3 - Vault]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-3-Vault</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-3-Vault</link>
             <guid>full-stack-it-automation-part-3-Vault</guid>
             <pubDate>Tue, 07 Dec 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Harshicorp Vault {#harshicorp vault}]]></description>
@@ -397,7 +397,7 @@ You need to have docker and docker-compose available. Docker service must be run
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 2 - Gitlab]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-2-gitlab</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-2-gitlab</link>
             <guid>full-stack-it-automation-part-2-gitlab</guid>
             <pubDate>Sat, 04 Dec 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Gitlab]]></description>
@@ -408,7 +408,7 @@ You need to have docker and docker-compose available. Docker service must be run
         </item>
         <item>
             <title><![CDATA[Full-Stack Automation Part 1 - Overview]]></title>
-            <link>https://liviozanol.github.io./full-stack-it-automation-part-1</link>
+            <link>https://livio.zanol.com.br/full-stack-it-automation-part-1</link>
             <guid>full-stack-it-automation-part-1</guid>
             <pubDate>Wed, 01 Dec 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Introduction]]></description>
@@ -416,7 +416,7 @@ You need to have docker and docker-compose available. Docker service must be run
         </item>
         <item>
             <title><![CDATA[First Post]]></title>
-            <link>https://liviozanol.github.io./first</link>
+            <link>https://livio.zanol.com.br/first</link>
             <guid>first</guid>
             <pubDate>Fri, 26 Nov 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Just a first page to keep a record (a.k.a "Hello World")!]]></description>
