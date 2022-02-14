@@ -49,7 +49,7 @@ We can create a structure comprehending these fields. In JSON it can be somethin
       "helper_address": "(ipv4)",
       "in_acl": [
         {
-          "action": "(allow|deny)",
+          "action": "(permit|deny)",
           "src": "(ipv4/mask)",
           "dst": "(ipv4/mask)",
           "protocol": "(tcp|udp|icmp|ip|gre)",
@@ -58,7 +58,7 @@ We can create a structure comprehending these fields. In JSON it can be somethin
       ],
       "out_acl": [
         {
-          "action": "(allow|deny)",
+          "action": "(permit|deny)",
           "src": "(ipv4/mask)",
           "dst": "(ipv4/mask)",
           "protocol": "(tcp|udp|icmp|ip|gre)",
@@ -79,7 +79,7 @@ We could also start to think on more specific constraints and business rules tha
 - helper_address must have only one ipv4 address (for simplicity in this demo).
 
 ACL specific constraints:
-- action must be either "allow" or "deny".
+- action must be either "permit" or "deny".
 - protocol must be one of the following: tcp, udp, icmp or gre.
 - icmp type and code are not supported.
 - For protocol types ip, icmp and gre, "port" must be empty.

@@ -4,17 +4,38 @@ title: Full-Stack Automation
 authors: [livio]
 tags: [automation, awx, ansible, gitlab, network automation]
 ---
-###TODO: DESENHO COM ARCH DE VERDADE COM MAIS GITLAB COM MAIS RUNNER E COM ACESSOS OCASIONAIS PARA MUDAR PLAYBOOKS NO GITLAB, ETC.
+###TODO:
+- DESENHO COM ARCH DE VERDADE COM MAIS GITLAB COM MAIS RUNNER E COM ACESSOS OCASIONAIS PARA MUDAR PLAYBOOKS NO GITLAB, ETC.
+- Mensagens zanol
+- google console
+- corrigir communication no fullstack para communicating
 
 
 
 
 
-UPDATING PAGE
+***********UPDATING PAGE*************
 npm run build
 GIT_USER=livio.zanol GIT_PASS= npm run deploy
 
 
+
+
+https://layerunknown.com/category/cisco/
+ip domain name fullstack.local
+crypto key generate rsa general-keys modulus 2048
+username routeruser privilege 15
+aaa new-model
+aaa authentication login default local
+aaa authorization exec default local
+ip ssh server authenticate user password
+ip ssh version 2
+login com chaves: https://networklessons.com/uncategorized/ssh-public-key-authentication-cisco-ios
+
+
+
+
+-c aes128-cbc -oKexAlgorithms=+diffie-hellman-group1-sha1
 
 
 
