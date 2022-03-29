@@ -59,6 +59,11 @@ You could also add some cache layer if you want using something like [redis](htt
 
 Everything will be auto deployed by our gitlab runner using a CI/CD pipeline.
 
+:::note
+You could, and it is a good practice, create 2 separated APIs layers for any specific service deployed. The first one deals with data validation, business rules and other things related with user relationship and frontend. This is the API accessed by users and the web interface. Another one would be responsible with basic validation, parsing, uploading data on gitlab and other things related with automation itself. The first one only talks to the second one and never touches any piece of your automation infrastructure. You could also add an auth for this API to API conversation using JWT for example to secure it better.
+:::
+
+
 The following picture demonstrate our expanded API layer for the demo (we will build a bastion host container and only one wan_site API container, but could be easilly scalable):
 ![API layer architecture](./img/api_arch.svg)
 

@@ -23,6 +23,10 @@ AWX is a complete automation solution based on ansible. It boosts ansible adding
 
 Note that AWX comes with a form to play tasks/playbooks that could be used for more simple automations. If you have small tight teams to OAMP only some infrastructure you could use it directly. But secrets for automated resources could be leaked and I do not think that this is a good solution for end-user direct intervention. So do it at your own risk.
 
+:::note
+To execute any playbook you can (and *really* should) add a bastion host to access your automated elements, and make AWX use, for example, SSH tunnel prior to connecting to the automated element, protecting it even more from undesirable access. [Read more on ansible documentation.](https://docs.ansible.com/ansible/5/reference_appendices/faq.html#how-do-i-configure-a-jump-host-to-access-servers-that-i-have-no-direct-access-to).
+:::
+
 ## Ansible/AWX Role {#ansible-role}
 
 Ansible/AWX is the "engine" that will access automation elements and execute actions to implement the changes submitted by the user (i.e. run a playbook) and validated by API and CI/CD.

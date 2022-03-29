@@ -5,7 +5,7 @@ authors: [livio]
 tags: [automation, harshicorp vault, ansible, gitlab, network automation]
 ---
 
-## Harshicorp Vault {#harshicorp vault}
+## Harshicorp Vault {#harshicorp-vault}
 
 [Harshicorp Vault](https://www.vaultproject.io/) is a solution to secure store and get sensitive information. It has a lot of features, like One Time Password, many auth methods, policies, temp tokens, etc.
 

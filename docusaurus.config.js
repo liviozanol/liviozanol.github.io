@@ -6,11 +6,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const my_mail = "livio@zanol.com.br";
 
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Livio\'s Dump',
-  tagline: 'Just to dump some thoughts',
+  tagline: 'Automation, IT and other',
   url: 'https://livio.zanol.com.br',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -20,10 +19,10 @@ const config = {
   projectName: 'liviozanol.github.io', // Usually your repo name.
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
-
-  presets: [
+    presets: [
     [
       '@docusaurus/preset-classic',
+      
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         blog: {
@@ -42,9 +41,8 @@ const config = {
     ],
   ],
 
-  themeConfig:
+  themeConfig: {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
       navbar: {
         title: 'Livio\'s Dump',
         logo: {
@@ -54,6 +52,7 @@ const config = {
           height: 32,
         },
         items: [
+          {to: '/', label: 'All Blog Posts', position: 'left'},
           {
             label: `E-mail: ${my_mail}`,
             href: `mailto:${my_mail}`,
@@ -70,12 +69,16 @@ const config = {
         style: 'dark',
         copyright: `Copyright © ${new Date().getFullYear()} Livio Zanol Puppim (${my_mail}). Built with Docusaurus.`,
       },
+      colorMode: {
+        defaultMode: 'dark',
+        respectPrefersColorScheme: true,
+      },
       prism: {
         defaultMode: 'dark',
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
-    }),
+  },
 };
 
 module.exports = config;
