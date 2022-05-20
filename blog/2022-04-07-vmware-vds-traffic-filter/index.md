@@ -14,7 +14,7 @@ What if you already have a good and working cloud-like architecture and just wan
 
 vSwitch doesn't support this; NSX-T does, but it is expensive... What about VDS???
 
-Python scripts used available at git repository: https://github.com/liviozanol/vmware_vds_traffic_filte
+Python scripts used available at git repository: https://github.com/liviozanol/vmware_vds_traffic_filter
 
 <!--truncate-->
 

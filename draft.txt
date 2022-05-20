@@ -6,8 +6,6 @@ tags: [automation, awx, ansible, gitlab, network automation]
 ---
 ###TODO:
 - DESENHO COM ARCH DE VERDADE COM MAIS GITLAB COM MAIS RUNNER E COM ACESSOS OCASIONAIS PARA MUDAR PLAYBOOKS NO GITLAB, ETC.
-- Mensagens za
-- google console
 - corrigir communication no fullstack para communicating
 
 
