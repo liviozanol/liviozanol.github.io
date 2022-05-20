@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[480],{6400:function(a){a.exports=JSON.parse('{"label":"first","permalink":"/tags/first","allTagsPath":"/tags","count":1}')}}]);

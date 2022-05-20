@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[2666],{8774:function(a){a.exports=JSON.parse('{"label":"vmware vds","permalink":"/tags/vmware-vds","allTagsPath":"/tags","count":1}')}}]);

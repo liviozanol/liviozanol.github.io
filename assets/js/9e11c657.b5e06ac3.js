@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[9103],{9661:function(p){p.exports=JSON.parse('{"label":"ops pipeline","permalink":"/tags/ops-pipeline","allTagsPath":"/tags","count":1}')}}]);

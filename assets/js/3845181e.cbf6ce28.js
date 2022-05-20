@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[3389],{4496:function(s){s.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/gitops","name":"gitops","count":8,"permalink":"/tags/gitops"}')}}]);

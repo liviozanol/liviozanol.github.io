@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[3656],{2328:function(a){a.exports=JSON.parse('{"label":"fastapi","permalink":"/tags/fastapi","allTagsPath":"/tags","count":1}')}}]);

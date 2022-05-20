@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[8727],{4292:function(a){a.exports=JSON.parse('{"label":"gitlab-ci","permalink":"/tags/gitlab-ci","allTagsPath":"/tags","count":8}')}}]);

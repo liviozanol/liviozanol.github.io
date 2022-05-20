@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[5823],{9617:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/inventory","name":"inventory","count":1,"permalink":"/tags/inventory"}')}}]);

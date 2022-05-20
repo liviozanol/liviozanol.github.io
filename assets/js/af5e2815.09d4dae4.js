@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[3028],{9827:function(a){a.exports=JSON.parse('{"label":"cloud infrastructure","permalink":"/tags/cloud-infrastructure","allTagsPath":"/tags","count":1}')}}]);

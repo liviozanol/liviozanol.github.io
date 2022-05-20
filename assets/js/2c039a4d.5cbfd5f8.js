@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[2484],{6080:function(a){a.exports=JSON.parse('{"label":"react admin","permalink":"/tags/react-admin","allTagsPath":"/tags","count":2}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[7409],{2585:function(l){l.exports=JSON.parse('{"label":"hello world","permalink":"/tags/hello-world","allTagsPath":"/tags","count":1}')}}]);

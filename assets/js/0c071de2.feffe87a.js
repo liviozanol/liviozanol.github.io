@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[321],{7040:function(e){e.exports=JSON.parse('{"permalink":"/page/2","page":2,"postsPerPage":10,"totalPages":2,"totalCount":14,"previousPage":"/","blogDescription":"Blog","blogTitle":"Blog"}')}}]);

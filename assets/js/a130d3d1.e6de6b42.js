@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklivio_dump_page=self.webpackChunklivio_dump_page||[]).push([[5044],{256:function(e){e.exports=JSON.parse('{"permalink":"/tags/gitlab","page":1,"postsPerPage":10,"totalPages":2,"totalCount":11,"nextPage":"/tags/gitlab/page/2","blogDescription":"Blog","blogTitle":"Blog"}')}}]);
